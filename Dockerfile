@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# ติดตั้ง PyTorch (เวอร์ชัน CPU) - โมเดลนี้ถูก Optimize มาให้รันบน CPU ได้ดีมาก
-# หากต้องการใช้ GPU ให้เปลี่ยน URL เป็นของ CUDA
-RUN pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+# ติดตั้ง PyTorch (เวอร์ชัน CUDA) - สำหรับ NVIDIA GPU
+# ใช้ CUDA 12.1 ที่เข้ากันได้กับไดรเวอร์ปัจจุบัน
+RUN pip install --no-cache-dir torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 # ติดตั้ง Typhoon ASR และ FastAPI สำหรับทำ API Server
 RUN pip install --no-cache-dir typhoon-asr fastapi uvicorn python-multipart
