@@ -4,7 +4,7 @@ FROM python:3.10-slim
 # ตั้งค่า Working Directory
 WORKDIR /app
 
-# ติดตั้ง System Dependencies ที่จำเป็นสำหรับการประมวลผลไฟล์เสียง
+# 1. ติดตั้ง System Dependencies (คงไว้ตามเดิม)
 RUN apt-get update && apt-get install -y \
     libsndfile1 \
     ffmpeg \
@@ -12,20 +12,16 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# รวบคำสั่ง pip install ไว้ด้วยกัน และใช้ --extra-index-url 
-# เพื่อให้ pip จัดการ Dependency ของ torch, torchaudio และ typhoon-asr ให้ตรงกันทั้งหมด
-# RUN pip install --no-cache-dir \
-#     torch torchaudio \
-#     typhoon-asr fastapi uvicorn python-multipart \
-#     --extra-index-url https://download.pytorch.org/whl/cu121
+# 2. ต้องติดตั้ง Cython และ build tools ก่อนเป็นอันดับแรก 
+# เพราะ sub-dependency (youtokentome) จำเป็นต้องใช้ในการ compile
+RUN pip install --no-cache-dir Cython setuptools wheel
 
-# รวบคำสั่ง pip install ไว้ด้วยกัน และล็อคเวอร์ชัน nemo_toolkit ไว้ไม่ให้เกิน 2.0.0
+# 3. ติดตั้งแพ็กเกจหลัก (รวมที่แก้เรื่อง Version Mismatch จากครั้งก่อนด้วย)
 RUN pip install --no-cache-dir \
     torch torchaudio \
     "nemo_toolkit[asr]<2.0.0" \
     typhoon-asr fastapi uvicorn python-multipart \
     --extra-index-url https://download.pytorch.org/whl/cu121
-
 # คัดลอกโค้ด API ของเราเข้าไปใน Container
 COPY app.py /app/app.py
 
