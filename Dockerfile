@@ -1,28 +1,23 @@
-# ใช้ Python 3.10 เป็น Base Image
-FROM python:3.10-slim
+# Use the official PyTorch image (2.2.0 with Python 3.10)
+FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
 
-# ตั้งค่า Working Directory
+# Set Working Directory
 WORKDIR /app
 
-RUN printf "deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware\n\
-deb-src http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware\n\
-deb http://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware" \
-> /etc/apt/sources.list.d/nvidia.list
-
-# 1. ติดตั้ง System Dependencies (คงไว้ตามเดิม)
+# 1. Install System Dependencies
+# Note: ffmpeg is still needed for audio processing
 RUN apt-get update && apt-get install -y \
-    build-essential ffmpeg \
-    linux-headers-amd64 \
-    nvidia-driver \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. ติดตั้ง Python Dependencies (คงไว้ตามเดิม)
-RUN pip install typhoon-asr fastapi uvicorn python-multipart ffmpeg-python
+# 2. Install Python Dependencies
+# We skip reinstalling torch since it's already in the base image
+RUN pip install --no-cache-dir typhoon-asr fastapi uvicorn python-multipart ffmpeg-python
 
 COPY app.py /app/app.py
 
-# เปิด Port 8000
+# Open Port 8000
 EXPOSE 8000
 
-# รัน FastAPI Server
+# Run FastAPI Server
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
