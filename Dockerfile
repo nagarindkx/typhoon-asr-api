@@ -4,6 +4,11 @@ FROM python:3.10-slim
 # ตั้งค่า Working Directory
 WORKDIR /app
 
+RUN printf "deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware\n\
+deb-src http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware\n\
+deb http://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware" \
+> /etc/apt/sources.list.d/nvidia.list
+
 # 1. ติดตั้ง System Dependencies (คงไว้ตามเดิม)
 RUN apt-get update && apt-get install -y \
     build-essential ffmpeg \
