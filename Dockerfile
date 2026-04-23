@@ -6,23 +6,12 @@ WORKDIR /app
 
 # 1. ติดตั้ง System Dependencies (คงไว้ตามเดิม)
 RUN apt-get update && apt-get install -y \
-    libsndfile1 \
-    ffmpeg \
-    git \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. ต้องติดตั้ง Cython และ build tools ก่อนเป็นอันดับแรก 
-# เพราะ sub-dependency (youtokentome) จำเป็นต้องใช้ในการ compile
-RUN pip install --no-cache-dir Cython setuptools wheel
+# 2. ติดตั้ง Python Dependencies (คงไว้ตามเดิม)
+RUN pip install typhoon-asr fastapi uvicorn python-multipart
 
-# 3. ติดตั้งแพ็กเกจหลัก (รวมที่แก้เรื่อง Version Mismatch จากครั้งก่อนด้วย)
-RUN pip install --no-cache-dir \
-    torch torchaudio \
-    "nemo_toolkit[asr]<2.0.0" \
-    typhoon-asr fastapi uvicorn python-multipart \
-    --extra-index-url https://download.pytorch.org/whl/cu121
-# คัดลอกโค้ด API ของเราเข้าไปใน Container
 COPY app.py /app/app.py
 
 # เปิด Port 8000
