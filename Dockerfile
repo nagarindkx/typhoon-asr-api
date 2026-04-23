@@ -8,6 +8,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential ffmpeg \
     linux-headers-amd64 \
+    nvidia-driver \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. ติดตั้ง Python Dependencies (คงไว้ตามเดิม)
