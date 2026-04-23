@@ -1,21 +1,27 @@
-# Use the PyTorch runtime as it's more flexible for versioning
 FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
 WORKDIR /app
 
-# 1. Install System Dependencies
+# 1. Set environment variables to skip interactive prompts
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=Asia/Bangkok
+
+# 2. Install System Dependencies
 RUN apt-get update && apt-get install -y \
-    ffmpeg build-essential git \
+    ffmpeg \
+    build-essential \
+    git \
+    tzdata \
+    && ln -fs /usr/share/zoneinfo/$TZ /etc/localtime \
+    && dpkg-reconfigure --frontend noninteractive tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Install specific versions to avoid the 'tdt_include_duration' error
-# We install typhoon-asr first, then force a NeMo version that is compatible
+# 3. Install Python Dependencies
 RUN pip install --no-cache-dir \
     fastapi uvicorn python-multipart ffmpeg-python \
     typhoon-asr
 
-# Force downgrade/upgrade NeMo to a stable version 
-# 1.22.0 is generally stable for these model types
+# Force NeMo version to fix the "tdt_include_duration" error
 RUN pip install --no-cache-dir "nemo_toolkit[asr]==1.22.0"
 
 COPY app.py /app/app.py
