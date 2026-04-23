@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. ติดตั้ง Python Dependencies (คงไว้ตามเดิม)
-RUN pip install typhoon-asr fastapi uvicorn python-multipart
+RUN pip install typhoon-asr fastapi uvicorn python-multipart ffmpeg-python
 
 COPY app.py /app/app.py
 
