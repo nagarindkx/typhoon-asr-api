@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
 
 # 3. Install Python Dependencies
 RUN pip install --no-cache-dir \
-    fastapi uvicorn python-multipart ffmpeg-python \
+    fastapi uvicorn python-multipart \
     typhoon-asr
 
 # Force NeMo version to fix the "tdt_include_duration" error
