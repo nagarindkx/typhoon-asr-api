@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip install --force-reinstall --no-deps PyYAML==6.0.1
+
 # 3. Install Python Dependencies
 RUN pip install --no-cache-dir \
     fastapi uvicorn python-multipart \
