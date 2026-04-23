@@ -22,7 +22,7 @@ RUN pip install --no-cache-dir \
     typhoon-asr
 
 # Force NeMo version to fix the "tdt_include_duration" error
-RUN pip install --no-cache-dir "nemo_toolkit[asr]==1.22.0"
+RUN pip install --no-cache-dir "nemo_toolkit[asr]"
 
 COPY app.py /app/app.py
 
