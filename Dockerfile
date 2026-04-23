@@ -6,7 +6,8 @@ WORKDIR /app
 
 # 1. ติดตั้ง System Dependencies (คงไว้ตามเดิม)
 RUN apt-get update && apt-get install -y \
-    build-essential \
+    build-essential ffmpeg \
+    linux-headers-amd64 \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. ติดตั้ง Python Dependencies (คงไว้ตามเดิม)
