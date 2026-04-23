@@ -1,22 +1,25 @@
-# Use the NeMo image which has all ASR dependencies pre-installed
-FROM nvcr.io/nvidia/nemo:24.01.framework
+# Use the PyTorch runtime as it's more flexible for versioning
+FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
-# Set Working Directory
 WORKDIR /app
 
 # 1. Install System Dependencies
 RUN apt-get update && apt-get install -y \
-    ffmpeg \
+    ffmpeg build-essential git \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Install Python Dependencies
-# We only install the API wrappers and typhoon-asr
-RUN pip install --no-cache-dir typhoon-asr fastapi uvicorn python-multipart ffmpeg-python
+# 2. Install specific versions to avoid the 'tdt_include_duration' error
+# We install typhoon-asr first, then force a NeMo version that is compatible
+RUN pip install --no-cache-dir \
+    fastapi uvicorn python-multipart ffmpeg-python \
+    typhoon-asr
+
+# Force downgrade/upgrade NeMo to a stable version 
+# 1.22.0 is generally stable for these model types
+RUN pip install --no-cache-dir "nemo_toolkit[asr]==1.22.0"
 
 COPY app.py /app/app.py
 
-# Open Port 8000
 EXPOSE 8000
 
-# Run FastAPI Server
 CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]
