@@ -18,12 +18,11 @@ RUN apt-get update && apt-get install -y \
     && dpkg-reconfigure --frontend noninteractive tzdata \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install --force-reinstall --no-deps PyYAML==6.0.1
-
 # 3. Install Python Dependencies
 RUN pip install --no-cache-dir \
     fastapi uvicorn python-multipart \
-    typhoon-asr
+    typhoon-asr \
+    --ignore-installed PyYAML
 
 # Force NeMo version to fix the "tdt_include_duration" error
 # RUN pip install --no-cache-dir "nemo_toolkit[asr]"
