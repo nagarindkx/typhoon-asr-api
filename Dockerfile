@@ -1,17 +1,16 @@
-# Use the official PyTorch image (2.2.0 with Python 3.10)
-FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+# Use the NeMo image which has all ASR dependencies pre-installed
+FROM nvcr.io/nvidia/nemo:24.01.framework
 
 # Set Working Directory
 WORKDIR /app
 
 # 1. Install System Dependencies
-# Note: ffmpeg is still needed for audio processing
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 # 2. Install Python Dependencies
-# We skip reinstalling torch since it's already in the base image
+# We only install the API wrappers and typhoon-asr
 RUN pip install --no-cache-dir typhoon-asr fastapi uvicorn python-multipart ffmpeg-python
 
 COPY app.py /app/app.py
