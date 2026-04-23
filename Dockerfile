@@ -1,5 +1,5 @@
 # FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
-FROM nvcr.io/nvidia/nemo:26.04.00
+FROM nvcr.io/nvidia/nemo:26.04
 
 
 WORKDIR /app
